@@ -1,0 +1,24 @@
+{
+  "name": "gt_hackathon_2025_backend",
+  "version": "1.0.0",
+  "description": "",
+  "homepage": "https://github.com/creatorpiyush-nagarro/gt_hackathon_2025_backend#readme",
+  "bugs": {
+    "url": "https://github.com/creatorpiyush-nagarro/gt_hackathon_2025_backend/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/creatorpiyush-nagarro/gt_hackathon_2025_backend.git"
+  },
+  "license": "ISC",
+  "author": "",
+  "type": "commonjs",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "express": "^5.1.0"
+  }
+}
