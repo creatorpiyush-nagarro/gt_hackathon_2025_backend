@@ -26,7 +26,7 @@ app.post('/chat', async (req, res) => {
         const response = await client.responses.create({
             model: 'gpt-4o',
             // instructions: 'You are a coding assistant that talks like a pirate',
-            input: { role: "user", content: prompt },
+            input: prompt,
             // messages: [
             //     // { role: 'developer', content: 'Talk like a pirate.' },
             //     { role: 'user', content: prompt },
