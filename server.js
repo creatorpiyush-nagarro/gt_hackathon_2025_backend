@@ -1,6 +1,7 @@
 const express = require('express');
 const app = express();
 const path = require('path');
+const fs = require('fs');
 
 const OpenAI = require('openai');
 
@@ -38,22 +39,24 @@ app.post('/chat', async (req, res) => {
 app.get('/download-model', (req, res) => {
     const filePath = path.join(__dirname, 'DeepSeek-R1-Distill-Qwen-1.5B_multi-prefill-seq_q8_ekv1280.task');
 
-    res.download(filePath, (err) => {
-        if (err) {
-            console.error('Download error:', err);
+    // Optional: check file exists
+    if (!fs.existsSync(filePath)) {
+        return res.status(404).send('File not found.');
+    }
 
-            // Only send error if response hasn't already been sent
-            if (!res.headersSent) {
-                res.status(500).send('Error downloading file.');
-            }
-        }
-    });
-
-    // Optional: handle client-side aborts
+    // Log if client aborts
     req.on('aborted', () => {
         console.warn('Client aborted the download.');
     });
+
+    res.download(filePath, (err) => {
+        if (err && !res.headersSent) {
+            // Only log; don't send response if already started
+            console.error('Download failed:', err.message);
+        }
+    });
 });
+
 
 
 app.listen(PORT, () => {
