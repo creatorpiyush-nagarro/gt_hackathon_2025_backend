@@ -21,16 +21,11 @@ app.get('/', (req, res) => {
 app.post('/chat', async (req, res) => {
     const { prompt } = req.body;
 
-
     try {
         const response = await client.responses.create({
             model: 'gpt-4o',
             // instructions: 'You are a coding assistant that talks like a pirate',
             input: prompt,
-            // messages: [
-            //     // { role: 'developer', content: 'Talk like a pirate.' },
-            //     { role: 'user', content: prompt },
-            // ],
         });
         // res.json({ response: result.data.choices[0].message.content });
         return res.status(201).json({ response: response.output_text });
@@ -42,13 +37,24 @@ app.post('/chat', async (req, res) => {
 
 app.get('/download-model', (req, res) => {
     const filePath = path.join(__dirname, 'DeepSeek-R1-Distill-Qwen-1.5B_multi-prefill-seq_q8_ekv1280.task');
+
     res.download(filePath, (err) => {
         if (err) {
             console.error('Download error:', err);
-            res.status(500).send('Error downloading file.');
+
+            // Only send error if response hasn't already been sent
+            if (!res.headersSent) {
+                res.status(500).send('Error downloading file.');
+            }
         }
     });
+
+    // Optional: handle client-side aborts
+    req.on('aborted', () => {
+        console.warn('Client aborted the download.');
+    });
 });
+
 
 app.listen(PORT, () => {
     console.log(`Server started with http://localhost:${PORT}`);
