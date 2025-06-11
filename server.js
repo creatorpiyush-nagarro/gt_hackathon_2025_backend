@@ -39,22 +39,33 @@ app.post('/chat', async (req, res) => {
 app.get('/download-model', (req, res) => {
     const filePath = path.join(__dirname, 'DeepSeek-R1-Distill-Qwen-1.5B_multi-prefill-seq_q8_ekv1280.task');
 
-    // Optional: check file exists
+    // Handle aborts early
+    req.on('aborted', () => {
+        console.warn('Client aborted the request');
+    });
+
+    // Check file exists first
     if (!fs.existsSync(filePath)) {
-        return res.status(404).send('File not found.');
+        return res.status(404).send('File not found');
     }
 
-    // Log if client aborts
-    req.on('aborted', () => {
-        console.warn('Client aborted the download.');
-    });
-
     res.download(filePath, (err) => {
-        if (err && !res.headersSent) {
-            // Only log; don't send response if already started
-            console.error('Download failed:', err.message);
+        if (err) {
+            // Do not send anything if headers already sent
+            if (!res.headersSent) {
+                res.status(500).send('Download failed');
+            }
+            console.error('Download error:', err.message);
         }
     });
+});
+
+// Catch uncaught errors
+app.use((err, req, res, next) => {
+    console.error('Unhandled Error:', err);
+    if (!res.headersSent) {
+        res.status(500).send('Internal Server Error');
+    }
 });
 
 
