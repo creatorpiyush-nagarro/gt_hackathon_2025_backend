@@ -1,23 +1,26 @@
 # Use an official Node.js runtime as a parent image
 FROM node:18-alpine
 
-# Set the working directory in the container
+# Set environment variables
+ENV NODE_ENV=production
+
+# Set the working directory
 WORKDIR /usr/src/app
 
-# Copy package.json and package-lock.json to the container
+# Copy dependency definitions
 COPY package*.json ./
 
-# Install dependencies
-RUN npm install
+# Install app dependencies and PM2 globally in one layer
+RUN npm install && npm install -g pm2
 
-# Install pm2
-RUN npm install pm2 -g
+ENV PM2_PUBLIC_KEY wdokbz3zp5ahtzo
+ENV PM2_SECRET_KEY zobramt82pgilcm
 
-# Copy the rest of the application source code to the container
+# Copy application code
 COPY . .
 
-# Expose the port the app runs on
+# Expose the application's port
 EXPOSE 3000
 
-# Command to run the application
-CMD ["pm2", "start", "server.js"]
+# Use pm2-runtime for proper Docker integration
+CMD ["pm2-runtime", "server.js"]
