@@ -10,6 +10,9 @@ COPY package*.json ./
 # Install dependencies
 RUN npm install
 
+# Install pm2
+RUN npm install pm2 -g
+
 # Copy the rest of the application source code to the container
 COPY . .
 
@@ -17,4 +20,4 @@ COPY . .
 EXPOSE 3000
 
 # Command to run the application
-CMD ["npm", "start"]
+CMD ["pm2", "start", "server.js"]
