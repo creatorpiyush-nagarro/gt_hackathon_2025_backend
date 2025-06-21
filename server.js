@@ -44,7 +44,7 @@ app.get('/get-model-data', (req, res) => {
 })
 
 app.get('/download-model', (req, res) => {
-    const filePath = path.join(__dirname, 'DeepSeek-R1-Distill-Qwen-1.5B_multi-prefill-seq_q8_ekv1280.task');
+    const filePath = path.join(__dirname, process.env.CURRENT_MODEL);
 
     if (!fs.existsSync(filePath)) {
         return res.status(404).send('File not found');
