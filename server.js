@@ -36,6 +36,13 @@ app.post('/chat', async (req, res) => {
     }
 });
 
+app.get('/get-model-data', (req, res) => {
+    return res.status(200).json({
+        currentModel: process.env.CURRENT_MODEL || null,
+        previousModel: process.env.PREVIOUS_MODEL || null
+    });
+})
+
 app.get('/download-model', (req, res) => {
     const filePath = path.join(__dirname, 'DeepSeek-R1-Distill-Qwen-1.5B_multi-prefill-seq_q8_ekv1280.task');
 
